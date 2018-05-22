@@ -14,7 +14,7 @@ namespace Dragon.Framework.Caching.Memory
     /// </summary>
     public class DefaultMemoryCacheManager : IMemoryCacheManager
     {
-        private const string CacheSyncChannel = "ygsc.ics.cache.sync";
+        private const string CacheSyncChannel = "cache.sync";
 
         /// <summary>
         /// 本地缓存

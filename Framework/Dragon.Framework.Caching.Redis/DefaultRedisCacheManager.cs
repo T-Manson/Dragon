@@ -146,21 +146,6 @@ namespace Dragon.Framework.Caching.Redis
 
         #endregion
 
-        #region KeyExpire
-
-        /// <summary>
-        /// 设置key过期时间
-        /// </summary>
-        /// <param name="key">缓存key</param>
-        /// <param name="expiry">过期时间</param>
-        /// <returns></returns>
-        private void KeyExpire(string key, TimeSpan expiry)
-        {
-            GetDatebase().KeyExpire(key, expiry);
-        }
-
-        #endregion
-
         #region 获取结果公共方法
 
         /// <summary>

@@ -1,4 +1,4 @@
-﻿namespace Dragon.Framework.Core.Caching.MessageModel
+﻿namespace Dragon.Framework.Core.MessageBus.CacheMessageModel
 {
     /// <summary>
     /// 缓存消息类型

@@ -1,11 +1,11 @@
 ﻿using Dragon.Framework.Core.Caching;
-using Dragon.Framework.Core.Caching.MessageModel;
 using Dragon.Framework.Core.MessageBus;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Concurrent;
+using Dragon.Framework.Core.MessageBus.CacheMessageModel;
 
 namespace Dragon.Framework.Caching.Memory
 {

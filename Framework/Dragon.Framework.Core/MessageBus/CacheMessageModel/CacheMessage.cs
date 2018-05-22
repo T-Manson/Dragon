@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Dragon.Framework.Core.Caching.MessageModel
+namespace Dragon.Framework.Core.MessageBus.CacheMessageModel
 {
     /// <summary>
     /// 缓存同步消息

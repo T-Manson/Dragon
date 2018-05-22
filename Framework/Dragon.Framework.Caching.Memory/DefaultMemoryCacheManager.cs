@@ -3,6 +3,7 @@ using Dragon.Framework.Core.Caching.MessageModel;
 using Dragon.Framework.Core.MessageBus;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Concurrent;
 
@@ -28,7 +29,7 @@ namespace Dragon.Framework.Caching.Memory
         /// <summary>
         /// 日志
         /// </summary>
-        private readonly ILogger _logger;
+        private readonly Lazy<ILogger> _loggerLazy;
 
         /// <summary>
         /// 消息总线
@@ -51,12 +52,11 @@ namespace Dragon.Framework.Caching.Memory
         /// 构造函数
         /// </summary>
         /// <param name="memoryCache"></param>
-        /// <param name="logger"></param>
-        public DefaultMemoryCacheManager(IMemoryCache memoryCache,
-            ILogger logger)
+        /// <param name="loggerFactory"></param>
+        public DefaultMemoryCacheManager(IMemoryCache memoryCache, ILoggerFactory loggerFactory)
         {
             _memoryCache = memoryCache;
-            _logger = logger;
+            _loggerLazy = new Lazy<ILogger>(() => loggerFactory?.CreateLogger<DefaultMemoryCacheManager>() ?? (ILogger)NullLogger<DefaultMemoryCacheManager>.Instance);
             _keyNullExpiry = new ConcurrentDictionary<string, DateTime>();
         }
 
@@ -65,14 +65,12 @@ namespace Dragon.Framework.Caching.Memory
         /// </summary>
         /// <param name="memoryCache"></param>
         /// <param name="messageBus"></param>
-        /// <param name="logger"></param>
-        public DefaultMemoryCacheManager(IMemoryCache memoryCache,
-            IMessageBus messageBus,
-            ILogger logger)
+        /// <param name="loggerFactory"></param>
+        public DefaultMemoryCacheManager(IMemoryCache memoryCache, IMessageBus messageBus, ILoggerFactory loggerFactory)
         {
             _memoryCache = memoryCache;
             _messageBus = messageBus;
-            _logger = logger;
+            _loggerLazy = new Lazy<ILogger>(() => loggerFactory?.CreateLogger<DefaultMemoryCacheManager>() ?? (ILogger)NullLogger<DefaultMemoryCacheManager>.Instance);
             _keyNullExpiry = new ConcurrentDictionary<string, DateTime>();
             _serverId = Guid.NewGuid().ToString("N");
 
@@ -82,7 +80,7 @@ namespace Dragon.Framework.Caching.Memory
 
                 if (m.CacheMessageType != CacheMessageType.Delete) return;
                 _memoryCache.Remove(m.Key);
-                _logger.LogInformation($"缓存同步，位置：{_serverId}，来源：{m.ServerId}，标识：[{m.Key}]，方式：delete");
+                _loggerLazy.Value.LogInformation($"缓存同步，位置：{_serverId}，来源：{m.ServerId}，标识：[{m.Key}]，方式：delete");
             });
         }
 

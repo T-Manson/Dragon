@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Dragon.Framework.MessageBus.Redis
 {
@@ -21,12 +22,12 @@ namespace Dragon.Framework.MessageBus.Redis
         /// <summary>
         /// 日志
         /// </summary>
-        private readonly ILogger _logger;
+        private readonly Lazy<ILogger> _loggerLazy;
 
         /// <summary>
         /// 连接
         /// </summary>
-        private Lazy<ConnectionMultiplexer> _connection;
+        private Lazy<ConnectionMultiplexer> _connectionLazy;
 
         /// <summary>
         /// redis subscriber
@@ -48,11 +49,13 @@ namespace Dragon.Framework.MessageBus.Redis
         /// <summary>
         /// 构造函数
         /// </summary>
-        public DefaultRedisMessageBus(IOptions<RedisMessageBusOptions> options, ILogger logger)
+        /// <param name="options"></param>
+        /// <param name="loggerFactory"></param>
+        public DefaultRedisMessageBus(IOptions<RedisMessageBusOptions> options, ILoggerFactory loggerFactory)
         {
             _options = options.Value;
-            _logger = logger;
-            _connection = new Lazy<ConnectionMultiplexer>(CreateConnection, true);
+            _loggerLazy = new Lazy<ILogger>(() => loggerFactory?.CreateLogger<DefaultRedisMessageBus>() ?? (ILogger)NullLogger<DefaultRedisMessageBus>.Instance);
+            _connectionLazy = new Lazy<ConnectionMultiplexer>(CreateConnection, true);
         }
 
         #endregion
@@ -69,8 +72,8 @@ namespace Dragon.Framework.MessageBus.Redis
                 {
                     if (_subscriber == null)
                     {
-                        _connection.Value.PreserveAsyncOrder = false;// 并行
-                        _subscriber = _connection.Value.GetSubscriber();
+                        _connectionLazy.Value.PreserveAsyncOrder = false;// 并行
+                        _subscriber = _connectionLazy.Value.GetSubscriber();
                     }
                 }
             }
@@ -143,7 +146,7 @@ namespace Dragon.Framework.MessageBus.Redis
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Redis连接失败。Exception:{ex}");
+                _loggerLazy.Value.LogError($"Redis连接失败。Exception:{ex}");
                 throw;
             }
         }
@@ -172,8 +175,8 @@ namespace Dragon.Framework.MessageBus.Redis
             if (disposing)
             {
                 _subscriber?.UnsubscribeAll();
-                _connection?.Value?.Dispose();
-                _connection = null;
+                _connectionLazy?.Value?.Dispose();
+                _connectionLazy = null;
             }
 
             _disposed = true;

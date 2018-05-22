@@ -1,6 +1,7 @@
 ﻿using Dragon.Framework.Core.Caching;
 using Dragon.Framework.Infrastructure.Helpers;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 using System;
@@ -26,12 +27,12 @@ namespace Dragon.Framework.Caching.Redis
         /// <summary>
         /// 日志
         /// </summary>
-        private readonly ILogger _logger;
+        private readonly Lazy<ILogger> _loggerLazy;
 
         /// <summary>
         /// 连接
         /// </summary>
-        private Lazy<ConnectionMultiplexer> _connection;
+        private Lazy<ConnectionMultiplexer> _connectionLazy;
 
         /// <summary>
         /// redis DB
@@ -58,11 +59,13 @@ namespace Dragon.Framework.Caching.Redis
         /// <summary>
         /// 构造函数
         /// </summary>
-        public DefaultRedisCacheManager(IOptions<RedisCacheOptions> options, ILogger logger)
+        /// <param name="options"></param>
+        /// <param name="loggerFactory"></param>
+        public DefaultRedisCacheManager(IOptions<RedisCacheOptions> options, ILoggerFactory loggerFactory)
         {
             _options = options.Value;
-            _logger = logger;
-            _connection = new Lazy<ConnectionMultiplexer>(CreateConnection, true);
+            _loggerLazy = new Lazy<ILogger>(() => loggerFactory?.CreateLogger<DefaultRedisCacheManager>() ?? (ILogger)NullLogger<DefaultRedisCacheManager>.Instance);
+            _connectionLazy = new Lazy<ConnectionMultiplexer>(CreateConnection, true);
         }
 
         #endregion
@@ -79,7 +82,7 @@ namespace Dragon.Framework.Caching.Redis
                 {
                     if (_database == null)
                     {
-                        _database = _connection.Value.GetDatabase(_options.Db);
+                        _database = _connectionLazy.Value.GetDatabase(_options.Db);
                     }
                 }
             }
@@ -190,7 +193,7 @@ namespace Dragon.Framework.Caching.Redis
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Redis连接失败。Exception:{ex}");
+                _loggerLazy.Value.LogError($"Redis连接失败。Exception:{ex}");
                 throw;
             }
         }
@@ -232,8 +235,8 @@ namespace Dragon.Framework.Caching.Redis
             if (disposing)
             {
                 _database = null;
-                _connection?.Value?.Dispose();
-                _connection = null;
+                _connectionLazy?.Value?.Dispose();
+                _connectionLazy = null;
             }
 
             _disposed = true;

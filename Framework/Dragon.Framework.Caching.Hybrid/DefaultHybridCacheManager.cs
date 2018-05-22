@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Dragon.Framework.Caching.Hybrid
 {
@@ -26,7 +27,7 @@ namespace Dragon.Framework.Caching.Hybrid
         /// <summary>
         /// 日志
         /// </summary>
-        private readonly ILogger _logger;
+        private readonly Lazy<ILogger> _loggerLazy;
 
         /// <summary>
         /// 是否已经回收
@@ -40,14 +41,12 @@ namespace Dragon.Framework.Caching.Hybrid
         /// </summary>
         /// <param name="memoryCacheManager">内存缓存</param>
         /// <param name="redisCacheManager">redis</param>
-        /// <param name="logger"></param>
-        public DefaultHybridCacheManager(IMemoryCacheManager memoryCacheManager, IRedisCacheManager redisCacheManager, ILogger logger)
+        /// <param name="loggerFactory"></param>
+        public DefaultHybridCacheManager(IMemoryCacheManager memoryCacheManager, IRedisCacheManager redisCacheManager, ILoggerFactory loggerFactory)
         {
             _providers = new List<IHybridCacheProvider> { memoryCacheManager, redisCacheManager };
-
             _keyNullExpiry = new ConcurrentDictionary<string, DateTime>();
-
-            _logger = logger;
+            _loggerLazy = new Lazy<ILogger>(() => loggerFactory?.CreateLogger<DefaultHybridCacheManager>() ?? (ILogger)NullLogger<DefaultHybridCacheManager>.Instance);
         }
 
         #endregion
@@ -56,7 +55,7 @@ namespace Dragon.Framework.Caching.Hybrid
 
         public T GetOrAdd<T>(string key, Func<T> getData, TimeSpan? expiry = null)
         {
-            _logger.LogInformation($"Hybrid Cache Provider Count:{_providers.Count}");
+            _loggerLazy.Value.LogInformation($"Hybrid Cache Provider Count:{_providers.Count}");
 
             var nullKey = $"{key}:NullData";
 
@@ -79,7 +78,7 @@ namespace Dragon.Framework.Caching.Hybrid
 
         public T Get<T>(string key)
         {
-            _logger.LogInformation($"Hybrid Cache Provider Count:{_providers.Count}");
+            _loggerLazy.Value.LogInformation($"Hybrid Cache Provider Count:{_providers.Count}");
 
             T value = default(T);
             int hasValueIndex = 0;
@@ -99,7 +98,7 @@ namespace Dragon.Framework.Caching.Hybrid
 
         public bool Set<T>(string key, T value, TimeSpan? expiry = null)
         {
-            _logger.LogInformation($"Hybrid Cache Provider Count:{_providers.Count}");
+            _loggerLazy.Value.LogInformation($"Hybrid Cache Provider Count:{_providers.Count}");
 
             foreach (var provider in _providers)
             {
@@ -114,7 +113,7 @@ namespace Dragon.Framework.Caching.Hybrid
 
         public bool Delete(string key)
         {
-            _logger.LogInformation($"Hybrid Cache Provider Count:{_providers.Count}");
+            _loggerLazy.Value.LogInformation($"Hybrid Cache Provider Count:{_providers.Count}");
 
             foreach (var provider in _providers)
             {

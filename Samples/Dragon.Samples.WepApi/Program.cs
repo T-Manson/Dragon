@@ -14,6 +14,7 @@ namespace Dragon.Samples.WepApi
         public static IWebHost BuildWebHost(string[] args)
         {
             var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
                 .AddCommandLine(args)   //添加对命令参数的支持
                 .Build();
 

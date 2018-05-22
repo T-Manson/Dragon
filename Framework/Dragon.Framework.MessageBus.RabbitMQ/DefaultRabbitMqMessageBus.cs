@@ -7,6 +7,7 @@ using RabbitMQ.Client.Events;
 using System;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Dragon.Framework.MessageBus.RabbitMQ
 {
@@ -23,12 +24,12 @@ namespace Dragon.Framework.MessageBus.RabbitMQ
         /// <summary>
         /// 日志
         /// </summary>
-        private readonly ILogger _logger;
+        private readonly Lazy<ILogger> _loggerLazy;
 
         /// <summary>
         /// 连接
         /// </summary>
-        private Lazy<IConnection> _connection;
+        private Lazy<IConnection> _connectionLazy;
 
         /// <summary>
         /// 是否已经回收
@@ -40,11 +41,13 @@ namespace Dragon.Framework.MessageBus.RabbitMQ
         /// <summary>
         /// 构造函数
         /// </summary>
-        public DefaultRabbitMqMessageBus(IOptions<RabbitMqMessageBusOptions> options, ILogger logger)
+        /// <param name="options"></param>
+        /// <param name="loggerFactory"></param>
+        public DefaultRabbitMqMessageBus(IOptions<RabbitMqMessageBusOptions> options, ILoggerFactory loggerFactory)
         {
             _options = options.Value;
-            _logger = logger;
-            _connection = new Lazy<IConnection>(CreateConnection, true);
+            _loggerLazy = new Lazy<ILogger>(() => loggerFactory?.CreateLogger<DefaultRabbitMqMessageBus>() ?? (ILogger)NullLogger<DefaultRabbitMqMessageBus>.Instance);
+            _connectionLazy = new Lazy<IConnection>(CreateConnection, true);
         }
 
         #endregion
@@ -61,7 +64,7 @@ namespace Dragon.Framework.MessageBus.RabbitMQ
         {
             try
             {
-                using (var channelModel = _connection.Value.CreateModel())
+                using (var channelModel = _connectionLazy.Value.CreateModel())
                 {
                     var bytes = Encoding.UTF8.GetBytes(message.ToJson());
                     var basicProperties = channelModel.CreateBasicProperties();
@@ -71,7 +74,7 @@ namespace Dragon.Framework.MessageBus.RabbitMQ
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Rmq: 消息发送失败， {message}。 Exception: {ex}");
+                _loggerLazy.Value.LogError($"Rmq: 消息发送失败， {message}。 Exception: {ex}");
             }
         }
 
@@ -95,7 +98,7 @@ namespace Dragon.Framework.MessageBus.RabbitMQ
         {
             try
             {
-                using (var channelModel = _connection.Value.CreateModel())
+                using (var channelModel = _connectionLazy.Value.CreateModel())
                 {
                     var consumer = new EventingBasicConsumer(channelModel);
                     consumer.Received += (model, ea) =>
@@ -107,7 +110,7 @@ namespace Dragon.Framework.MessageBus.RabbitMQ
                         }
                         catch (Exception ex)
                         {
-                            _logger.LogError($"Rmq: 消息接受失败。message: {ea.Body}，Exception: {ex}");
+                            _loggerLazy.Value.LogError($"Rmq: 消息接受失败。message: {ea.Body}，Exception: {ex}");
                         }
                     };
                     channelModel.BasicConsume(channel, true, consumer);
@@ -115,7 +118,7 @@ namespace Dragon.Framework.MessageBus.RabbitMQ
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Rmq: 消息接受失败，Exception: {ex}");
+                _loggerLazy.Value.LogError($"Rmq: 消息接受失败，Exception: {ex}");
             }
         }
 
@@ -147,7 +150,7 @@ namespace Dragon.Framework.MessageBus.RabbitMQ
             }
             catch (Exception ex)
             {
-                _logger.LogError($"RabbitMQ连接失败。 Exception: {ex}");
+                _loggerLazy.Value.LogError($"RabbitMQ连接失败。 Exception: {ex}");
                 throw;
             }
         }
@@ -175,8 +178,8 @@ namespace Dragon.Framework.MessageBus.RabbitMQ
 
             if (disposing)
             {
-                _connection?.Value?.Dispose();
-                _connection = null;
+                _connectionLazy?.Value?.Dispose();
+                _connectionLazy = null;
             }
 
             _disposed = true;

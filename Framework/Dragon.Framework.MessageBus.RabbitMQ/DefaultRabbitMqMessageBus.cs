@@ -1,13 +1,13 @@
 ﻿using Dragon.Framework.Core.MessageBus;
 using Dragon.Framework.Infrastructure.Helpers;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Dragon.Framework.MessageBus.RabbitMQ
 {
@@ -178,6 +178,7 @@ namespace Dragon.Framework.MessageBus.RabbitMQ
 
             if (disposing)
             {
+                _connectionLazy?.Value?.Close();
                 _connectionLazy?.Value?.Dispose();
                 _connectionLazy = null;
             }

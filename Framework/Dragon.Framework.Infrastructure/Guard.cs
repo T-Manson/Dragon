@@ -28,7 +28,7 @@ namespace Dragon.Framework.Infrastructure
 
             if (argument.Any(c => invliadChars.Contains(c)))
             {
-                throw new ArgumentException($"@The provided String argument {argumentName} contains invalid path character.");
+                throw new ArgumentException($"@The provided string argument {argumentName} contains invalid path character.");
             }
         }
 
@@ -113,7 +113,7 @@ namespace Dragon.Framework.Infrastructure
         {
             if (trimString && argumentValue.IsNullOrWhiteSpace() || !trimString && argumentValue.IsNullOrEmpty())
             {
-                throw new ArgumentException($@"The provided String argument {argumentName} must not be empty.");
+                throw new ArgumentException($@"The provided string argument {argumentName} must not be empty.");
             }
         }
 

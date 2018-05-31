@@ -52,7 +52,7 @@ namespace Dragon.Framework.Infrastructure
         }
 
         /// <summary>
-        /// 指示指定的 <see cref="System.String"/> 对象是 null 还是 System.String.Empty 字符串。
+        /// 指示指定的 <see cref="System.String"/> 对象是 null 还是 System.string.Empty 字符串。
         /// </summary>
         public static bool IsNullOrEmpty(this string data)
         {

@@ -121,7 +121,7 @@ namespace Dragon.Framework.Infrastructure
             {
                 for (var rowIndex = 0; rowIndex < arrValues.GetLength(0); rowIndex++)
                 {
-                    var values = arrValues[rowIndex, colIndex].Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                    var values = arrValues[rowIndex, colIndex].Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
                     var newLength = values.Length == 0 ? 0 : values.Max(s => s?.Length ?? 0);
                     var oldLength = maxColumnsWidth[colIndex];
 
@@ -143,7 +143,7 @@ namespace Dragon.Framework.Infrastructure
         {
             if ((expresstion.Body as UnaryExpression)?.Operand is MemberExpression)
             {
-                return (((UnaryExpression) expresstion.Body).Operand as MemberExpression)?.Member as PropertyInfo;
+                return (((UnaryExpression)expresstion.Body).Operand as MemberExpression)?.Member as PropertyInfo;
             }
 
             return (expresstion.Body as MemberExpression)?.Member as PropertyInfo;
@@ -210,8 +210,7 @@ namespace Dragon.Framework.Infrastructure
             {
                 return;
             }
-            var array = enums.ToArray();
-            foreach (var item in array)
+            foreach (var item in enums)
             {
                 if (!action(item))
                 {

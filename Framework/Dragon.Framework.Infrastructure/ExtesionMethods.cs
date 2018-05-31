@@ -52,7 +52,7 @@ namespace Dragon.Framework.Infrastructure
 
         #endregion
 
-        #region Object
+        #region object
 
         public static dynamic Reflect(this object instance)
         {

@@ -19,15 +19,15 @@ namespace Dragon.Framework.Infrastructure.Helpers
         /// <param name="encoding">编码，为空使用 UTF-8 编码。</param>
         /// <param name="useBase64String">指示是否对结果使用BASE64编码。</param>
         /// <returns>加密后的数据</returns>
-        public static string Encrypt32Md5(string data, Encoding encoding = null, bool useBase64String = true)
+        public static string Encrypt32Md5(string data, Encoding encoding = null, bool useBase64string = true)
         {
-            if (data.IsNullOrWhiteSpace()) return String.Empty;
+            if (data.IsNullOrWhiteSpace()) return string.Empty;
 
             encoding = encoding ?? Encoding.UTF8;
             using (var md5 = MD5.Create())
             {
                 var buffer = md5.ComputeHash(encoding.GetBytes(data));
-                var result = useBase64String ? Convert.ToBase64String(buffer) : encoding.GetString(buffer);
+                var result = useBase64string ? Convert.ToBase64String(buffer) : encoding.GetString(buffer);
                 return result;
             }
         }

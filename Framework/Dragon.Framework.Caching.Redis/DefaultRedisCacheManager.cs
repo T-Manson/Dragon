@@ -253,6 +253,7 @@ namespace Dragon.Framework.Caching.Redis
             if (disposing)
             {
                 _database = null;
+                _connectionLazy?.Value?.Close();
                 _connectionLazy?.Value?.Dispose();
                 _connectionLazy = null;
             }

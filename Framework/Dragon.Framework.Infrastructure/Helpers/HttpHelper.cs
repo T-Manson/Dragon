@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dragon.Framework.Infrastructure.HttpRequest;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -6,7 +7,6 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
-using Dragon.Framework.Infrastructure.HttpRequest;
 
 namespace Dragon.Framework.Infrastructure.Helpers
 {
@@ -97,7 +97,7 @@ namespace Dragon.Framework.Infrastructure.Helpers
                     requestParamsBuilder.AppendFormat("{0}={1}&", keyValuePair.Key, keyValuePair.Value);
                 }
 
-                requestParameter.Uri += $"?{requestParamsBuilder.ToString().TrimEnd('&')}";
+                requestParameter.Uri = string.Concat(requestParameter.Uri, $"?{requestParamsBuilder.ToString().TrimEnd('&')}");
             }
             else if (request != null)
             {

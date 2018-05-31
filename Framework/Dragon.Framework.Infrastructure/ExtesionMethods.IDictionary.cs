@@ -20,7 +20,7 @@ namespace Dragon.Framework.Infrastructure
         public static void AddRange<TKey, TValue>(this IDictionary<TKey, TValue> instance, IEnumerable<KeyValuePair<TKey, TValue>> toAdd, bool replaceExisting = true)
         {
             Guard.ArgumentNotNull(toAdd, nameof(toAdd));
-            
+
             foreach (var pair in toAdd)
             {
                 instance.Set(pair.Key, pair.Value);
@@ -90,7 +90,7 @@ namespace Dragon.Framework.Infrastructure
         {
             Guard.ArgumentNotNull(valueFunc, nameof(valueFunc));
 
-            if (instance.TryGetValue(key, out var result)) return (TValue) result;
+            if (instance.TryGetValue(key, out var result)) return (TValue)result;
             result = valueFunc(key);
             instance.Add(key, result);
 
@@ -119,7 +119,7 @@ namespace Dragon.Framework.Infrastructure
                 return values;
             }
 
-            var newValues = values.Select(kp => new KeyValuePair<string, object>($"{prefix}.{kp.Key}", kp.Value)).ToArray();
+            var newValues = values.Select(kp => new KeyValuePair<string, object>($"{prefix}.{kp.Key}", kp.Value));
             values.Clear();
             foreach (var value in newValues)
             {
@@ -141,21 +141,21 @@ namespace Dragon.Framework.Infrastructure
                 TKey key,
                 object dictionaryLock,
                 Func<TValue> valueInitializer)
+        {
+            var found = dictionary.TryGetValue(key, out var value);
+            if (found) return value;
+
+            lock (dictionaryLock)
             {
-                var found = dictionary.TryGetValue(key, out var value);
+                found = dictionary.TryGetValue(key, out value);
                 if (found) return value;
 
-                lock (dictionaryLock)
-                {
-                    found = dictionary.TryGetValue(key, out value);
-                    if (found) return value;
+                value = valueInitializer();
 
-                    value = valueInitializer();
-
-                    dictionary.Add(key, value);
-                }
-                return value;
+                dictionary.Add(key, value);
             }
+            return value;
+        }
 
         public static async Task<TValue> SafeGetValueAsync<TKey, TValue>(
             this IDictionary<TKey, TValue> dictionary,

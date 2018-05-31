@@ -46,8 +46,8 @@ namespace Dragon.Framework.Infrastructure
                 return refrenceEquals;
             }
 
-            var array1 = enum1.Cast<Object>().ToArray();
-            var array2 = enum2.Cast<Object>().ToArray();
+            var array1 = enum1.Cast<object>().ToArray();
+            var array2 = enum2.Cast<object>().ToArray();
 
             if (array1.Length != array2.Length)
             {

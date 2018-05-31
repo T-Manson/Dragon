@@ -1,11 +1,11 @@
 ﻿using Dragon.Framework.Core.Caching;
 using Dragon.Framework.Core.MessageBus;
+using Dragon.Framework.Core.MessageBus.CacheMessageModel;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Concurrent;
-using Dragon.Framework.Core.MessageBus.CacheMessageModel;
 
 namespace Dragon.Framework.Caching.Memory
 {
@@ -185,7 +185,7 @@ namespace Dragon.Framework.Caching.Memory
                 _memoryCache.Set(key, value, expiry.Value);
             else
                 _memoryCache.Set(key, value);
-            _messageBus?.Publish(CacheSyncChannel, CacheMessage.SetDeleteMessage(_serverId, key));
+            _messageBus?.PublishAsync(CacheSyncChannel, CacheMessage.SetDeleteMessage(_serverId, key));
             return true;
         }
 

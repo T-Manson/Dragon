@@ -133,6 +133,7 @@ namespace Dragon.Framework.ApiCore.Middlewares
             }
             finally
             {
+                sw.Close();
                 sw.Dispose();
             }
             return sw.ToString();

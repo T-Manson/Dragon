@@ -1,11 +1,11 @@
 ﻿using Dragon.Framework.Core.MessageBus;
 using Dragon.Framework.Infrastructure.Helpers;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Dragon.Framework.MessageBus.Redis
 {
@@ -175,6 +175,8 @@ namespace Dragon.Framework.MessageBus.Redis
             if (disposing)
             {
                 _subscriber?.UnsubscribeAll();
+                _subscriber = null;
+                _connectionLazy?.Value?.Close();
                 _connectionLazy?.Value?.Dispose();
                 _connectionLazy = null;
             }

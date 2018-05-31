@@ -19,21 +19,21 @@ namespace Dragon.Framework.Core.Exceptions
         /// 自定义错误消息的构造函数
         /// </summary>
         /// <param name="configKey">配置key</param>
-        public ConfigException(String configKey) : base($"缺少相关配置。{configKey}") { }
+        public ConfigException(string configKey) : base($"缺少相关配置。{configKey}") { }
 
         /// <summary>
         /// 自定义错误消息的构造函数
         /// </summary>
         /// <param name="msgFormat">带占位符的消息</param>
         /// <param name="os">占位数据</param>
-        public ConfigException(String msgFormat, params Object[] os) : base(String.Format(msgFormat, os)) { }
+        public ConfigException(string msgFormat, params object[] os) : base(String.Format(msgFormat, os)) { }
 
         /// <summary>
         /// 自定义错误消息的构造函数
         /// </summary>
         /// <param name="message">消息</param>
         /// <param name="innerException">错误来源</param>
-        public ConfigException(String message, Exception innerException) : base(message, innerException) { }
+        public ConfigException(string message, Exception innerException) : base(message, innerException) { }
 
         /// <summary>
         /// 自定义错误消息的构造函数

@@ -132,7 +132,7 @@ namespace Dragon.Framework.Caching.Redis
                 if (result == null)
                     Set(key, default(T), TimeSpan.FromSeconds(1));
                 else
-                    Set(key, value, expiry);
+                    Set(key, result, expiry);
 
                 UnlockInstance(mutexKey, uniqueValue);
 

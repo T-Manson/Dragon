@@ -54,6 +54,20 @@ namespace Dragon.Framework.Caching.Redis
         /// </summary>
         private const string NullDataValue = "null";
 
+        private const string NullDataKeyFormat = "{0}:nodata";
+
+        private const string MutexKeyFormat = "{0}:mutex";
+
+        /// <summary>
+        /// String containing the Lua unlock script.
+        /// </summary>
+        private const String UnlockScript = @"
+            if redis.call(""get"",KEYS[1]) == ARGV[1] then
+                return redis.call(""del"",KEYS[1])
+            else
+                return 0
+            end";
+
         #region 初始化
 
         /// <summary>
@@ -89,40 +103,44 @@ namespace Dragon.Framework.Caching.Redis
             return _database;
         }
 
+        /// <summary>
+        /// 创建唯一锁Id
+        /// </summary>
+        /// <returns></returns>
+        protected static byte[] CreateUniqueLockId()
+        {
+            return Guid.NewGuid().ToByteArray();
+        }
+
         #region String
 
         public T GetOrAdd<T>(string key, Func<T> getData, TimeSpan? expiry = null)
         {
-            var nullKey = $"{key}:nodata";
+            var value = GetDatebase().StringGet(CacheKeyConverter.GetKeyWithRegion(key));
+            if (value.HasValue) return GetValue<T>(value);
 
-            // 防穿透
-            if (Get<string>(nullKey) != null)
-                return default(T);
+            var mutexKey = string.Format(MutexKeyFormat, key);
 
-            var value = Get<T>(key);
-            if (value == null)
+            // 防击穿（热点key并发）
+            var uniqueValue = CreateUniqueLockId();
+            if (SetNotExists(mutexKey, uniqueValue, TimeSpan.FromMinutes(1)))
             {
-                var mutexKey = $"{key}:mutex";
+                var result = getData();
+                _loggerLazy.Value.LogInformation($"GetOrAdd, [key:{key}], call getData func");
 
-                // 防击穿（热点key并发）
-                if (SetNotExists(mutexKey, "1", TimeSpan.FromMinutes(1)))
-                {
-                    value = getData();
-                    if (value == null)
-                        Set(nullKey, NullDataValue, TimeSpan.FromSeconds(15));
-                    else
-                        Set(key, value, expiry);
-
-                    Delete(mutexKey);
-                }
+                //防穿透
+                if (result == null)
+                    Set(key, default(T), TimeSpan.FromSeconds(1));
                 else
-                {
-                    Thread.SpinWait(50);
-                    GetOrAdd(key, getData, expiry);
-                }
+                    Set(key, value, expiry);
+
+                UnlockInstance(mutexKey, uniqueValue);
+
+                return result;
             }
 
-            return value;
+            Thread.Sleep(50);
+            return GetOrAdd(key, getData, expiry);
         }
 
         public T Get<T>(string key)
@@ -164,6 +182,22 @@ namespace Dragon.Framework.Caching.Redis
         #region 公共方法
 
         /// <summary>
+        /// 解锁实例
+        /// </summary>
+        /// <param name="key">key</param>
+        /// <param name="value">值</param>
+        private void UnlockInstance(string key, byte[] value)
+        {
+            RedisKey[] keys = { CacheKeyConverter.GetKeyWithRegion(key) };
+            RedisValue[] values = { value };
+            GetDatebase().ScriptEvaluate(
+                UnlockScript,
+                keys,
+                values
+            );
+        }
+
+        /// <summary>
         /// 创建连接
         /// </summary>
         /// <returns></returns>
@@ -186,14 +220,13 @@ namespace Dragon.Framework.Caching.Redis
         /// <summary>
         /// 设置不存在的值
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="key">缓存key</param>
         /// <param name="value">值</param>
         /// <param name="expiry">过期时间</param>
         /// <returns></returns>
-        private bool SetNotExists<T>(string key, T value, TimeSpan? expiry = null)
+        private bool SetNotExists(string key, byte[] value, TimeSpan? expiry = null)
         {
-            return GetDatebase().StringSet(CacheKeyConverter.GetKeyWithRegion(key), JsonHelper.SerializeObject(value), expiry, When.NotExists);
+            return GetDatebase().StringSet(CacheKeyConverter.GetKeyWithRegion(key), value, expiry, When.NotExists);
         }
 
         #endregion

@@ -15,11 +15,6 @@ namespace Dragon.Framework.Caching.Hybrid
     public class DefaultHybridCacheManager : IHybridCacheManager
     {
         /// <summary>
-        /// key集合
-        /// </summary>
-        private readonly ConcurrentDictionary<string, DateTime> _keyNullExpiry;
-
-        /// <summary>
         /// 混合缓存提供者
         /// </summary>
         private readonly List<IHybridCacheProvider> _providers;
@@ -45,7 +40,6 @@ namespace Dragon.Framework.Caching.Hybrid
         public DefaultHybridCacheManager(IMemoryCacheManager memoryCacheManager, IRedisCacheManager redisCacheManager, ILoggerFactory loggerFactory)
         {
             _providers = new List<IHybridCacheProvider> { memoryCacheManager, redisCacheManager };
-            _keyNullExpiry = new ConcurrentDictionary<string, DateTime>();
             _loggerLazy = new Lazy<ILogger>(() => loggerFactory?.CreateLogger<DefaultHybridCacheManager>() ?? (ILogger)NullLogger<DefaultHybridCacheManager>.Instance);
         }
 
@@ -55,22 +49,12 @@ namespace Dragon.Framework.Caching.Hybrid
 
         public T GetOrAdd<T>(string key, Func<T> getData, TimeSpan? expiry = null)
         {
-            _loggerLazy.Value.LogInformation($"Hybrid Cache Provider Count:{_providers.Count}");
+            var valueTuple = GetTupleByGetOrAdd(key, getData, expiry);
+            var hasValueIndex = valueTuple.Item2;
 
-            var nullKey = $"{key}:NullData";
-
-            // 防止缓存雪崩
-            if (_keyNullExpiry.TryGetValue(nullKey, out var expriy) && expriy >= DateTime.Now)
+            for (; hasValueIndex >= 0; hasValueIndex--)
             {
-                return default(T);
-            }
-
-            Tuple<T, int> valueTuple = GetTupleByGetOrAdd(key, getData, expiry);
-
-            int hasValueIndex = valueTuple.Item2;
-            for (; hasValueIndex > 0; hasValueIndex--)
-            {
-                _providers[hasValueIndex - 1].Set(key, valueTuple.Item1);
+                _providers[hasValueIndex].Set(key, valueTuple.Item1);
             }
 
             return valueTuple.Item1;
@@ -78,19 +62,17 @@ namespace Dragon.Framework.Caching.Hybrid
 
         public T Get<T>(string key)
         {
-            _loggerLazy.Value.LogInformation($"Hybrid Cache Provider Count:{_providers.Count}");
-
-            T value = default(T);
-            int hasValueIndex = 0;
+            var value = default(T);
+            var hasValueIndex = 0;
             for (; hasValueIndex < _providers.Count; hasValueIndex++)
             {
                 value = _providers[hasValueIndex].Get<T>(key);
                 if (value != null && !value.Equals(default(T))) break;
             }
 
-            for (; hasValueIndex > 0; hasValueIndex--)
+            for (; hasValueIndex >= 0; hasValueIndex--)
             {
-                _providers[hasValueIndex - 1].Set(key, value);
+                _providers[hasValueIndex].Set(key, value);
             }
 
             return value;
@@ -98,8 +80,6 @@ namespace Dragon.Framework.Caching.Hybrid
 
         public bool Set<T>(string key, T value, TimeSpan? expiry = null)
         {
-            _loggerLazy.Value.LogInformation($"Hybrid Cache Provider Count:{_providers.Count}");
-
             foreach (var provider in _providers)
             {
                 provider.Set(key, value, expiry);
@@ -113,8 +93,6 @@ namespace Dragon.Framework.Caching.Hybrid
 
         public bool Delete(string key)
         {
-            _loggerLazy.Value.LogInformation($"Hybrid Cache Provider Count:{_providers.Count}");
-
             foreach (var provider in _providers)
             {
                 provider.Delete(key);
@@ -136,44 +114,26 @@ namespace Dragon.Framework.Caching.Hybrid
         /// <returns></returns>
         private Tuple<T, int> GetTupleByGetOrAdd<T>(string key, Func<T> getData, TimeSpan? expiry = null)
         {
-            T value = default(T);
-            int hasValueIndex = 0;
+            var value = default(T);
+            var hasValueIndex = 0;
             for (; hasValueIndex < _providers.Count; hasValueIndex++)
             {
                 if (_providers[hasValueIndex].CacheLevel != CacheLevel.Distributed)
                 {
                     value = _providers[hasValueIndex].Get<T>(key);
-                    if (value != null && !value.Equals(default(T))) break;
+                    if (value != null && !value.Equals(default(T)))
+                    {
+                        hasValueIndex++;
+                        break;
+                    }
                 }
                 else
                 {
                     value = _providers[hasValueIndex].GetOrAdd(key, getData, expiry);
-
-                    // 防止缓存雪崩
-                    if (value == null || value.Equals(default(T)))
-                    {
-                        SetNullExpiry(key);
-                        break;
-                    }
-                    else break;
                 }
             }
 
-            return new Tuple<T, int>(value, hasValueIndex);
-        }
-
-        /// <summary>
-        /// 设置空数据有效期
-        /// </summary>
-        /// <param name="key"></param>
-        private void SetNullExpiry(string key)
-        {
-            var nullKey = $"{key}:NullData";
-            var now = DateTime.Now.AddSeconds(5);
-            if (!_keyNullExpiry.TryAdd(nullKey, now))
-            {
-                _keyNullExpiry[nullKey] = now;
-            }
+            return new Tuple<T, int>(value, hasValueIndex - 2);
         }
 
         #endregion

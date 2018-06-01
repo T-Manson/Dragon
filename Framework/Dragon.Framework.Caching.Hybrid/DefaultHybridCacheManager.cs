@@ -3,7 +3,6 @@ using Dragon.Framework.Caching.Redis;
 using Dragon.Framework.Core.Caching;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging.Abstractions;
 

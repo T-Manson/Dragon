@@ -49,13 +49,6 @@ namespace Dragon.Framework.Caching.Redis
         /// </summary>
         private bool _disposed;
 
-        /// <summary>
-        /// 空值常量key
-        /// </summary>
-        private const string NullDataValue = "null";
-
-        private const string NullDataKeyFormat = "{0}:nodata";
-
         private const string MutexKeyFormat = "{0}:mutex";
 
         /// <summary>
@@ -123,20 +116,25 @@ namespace Dragon.Framework.Caching.Redis
 
             // 防击穿（热点key并发）
             var uniqueValue = CreateUniqueLockId();
-            if (SetNotExists(mutexKey, uniqueValue, TimeSpan.FromMinutes(1)))
+            try
             {
-                var result = getData();
-                _loggerLazy.Value.LogInformation($"GetOrAdd, [key:{key}], call getData func");
+                if (SetNotExists(mutexKey, uniqueValue, TimeSpan.FromMinutes(1)))
+                {
+                    var result = getData();
+                    _loggerLazy.Value.LogInformation($"GetOrAdd, [key:{key}], call getData func");
 
-                //防穿透
-                if (result == null)
-                    Set(key, default(T), TimeSpan.FromSeconds(1));
-                else
-                    Set(key, result, expiry);
+                    //防穿透
+                    if (result == null)
+                        Set(key, default(T), TimeSpan.FromSeconds(1));
+                    else
+                        Set(key, result, expiry);
 
+                    return result;
+                }
+            }
+            finally
+            {
                 UnlockInstance(mutexKey, uniqueValue);
-
-                return result;
             }
 
             Thread.Sleep(50);

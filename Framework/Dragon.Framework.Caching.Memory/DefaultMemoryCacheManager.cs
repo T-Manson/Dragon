@@ -56,7 +56,7 @@ namespace Dragon.Framework.Caching.Memory
         public DefaultMemoryCacheManager(IMemoryCache memoryCache, ILoggerFactory loggerFactory)
         {
             _memoryCache = memoryCache;
-            _loggerLazy = new Lazy<ILogger>(() => loggerFactory?.CreateLogger<DefaultMemoryCacheManager>() ?? (ILogger)NullLogger<DefaultMemoryCacheManager>.Instance);
+            _loggerLazy = new Lazy<ILogger>(() => loggerFactory?.CreateLogger<DefaultMemoryCacheManager>() ?? NullLogger<DefaultMemoryCacheManager>.Instance);
             _keyNullExpiry = new ConcurrentDictionary<string, DateTime>();
         }
 
@@ -70,7 +70,7 @@ namespace Dragon.Framework.Caching.Memory
         {
             _memoryCache = memoryCache;
             _messageBus = messageBus;
-            _loggerLazy = new Lazy<ILogger>(() => loggerFactory?.CreateLogger<DefaultMemoryCacheManager>() ?? (ILogger)NullLogger<DefaultMemoryCacheManager>.Instance);
+            _loggerLazy = new Lazy<ILogger>(() => loggerFactory?.CreateLogger<DefaultMemoryCacheManager>() ?? NullLogger<DefaultMemoryCacheManager>.Instance);
             _keyNullExpiry = new ConcurrentDictionary<string, DateTime>();
             _serverId = Guid.NewGuid().ToString("N");
 

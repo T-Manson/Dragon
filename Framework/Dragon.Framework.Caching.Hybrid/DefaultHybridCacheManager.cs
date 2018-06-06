@@ -39,7 +39,7 @@ namespace Dragon.Framework.Caching.Hybrid
         public DefaultHybridCacheManager(IMemoryCacheManager memoryCacheManager, IRedisCacheManager redisCacheManager, ILoggerFactory loggerFactory)
         {
             _providers = new List<IHybridCacheProvider> { memoryCacheManager, redisCacheManager };
-            _loggerLazy = new Lazy<ILogger>(() => loggerFactory?.CreateLogger<DefaultHybridCacheManager>() ?? (ILogger)NullLogger<DefaultHybridCacheManager>.Instance);
+            _loggerLazy = new Lazy<ILogger>(() => loggerFactory?.CreateLogger<DefaultHybridCacheManager>() ?? NullLogger<DefaultHybridCacheManager>.Instance);
         }
 
         #endregion

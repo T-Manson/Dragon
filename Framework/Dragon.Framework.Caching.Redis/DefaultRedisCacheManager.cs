@@ -71,7 +71,7 @@ namespace Dragon.Framework.Caching.Redis
         public DefaultRedisCacheManager(IOptions<RedisCacheOptions> options, ILoggerFactory loggerFactory)
         {
             _options = options.Value;
-            _loggerLazy = new Lazy<ILogger>(() => loggerFactory?.CreateLogger<DefaultRedisCacheManager>() ?? (ILogger)NullLogger<DefaultRedisCacheManager>.Instance);
+            _loggerLazy = new Lazy<ILogger>(() => loggerFactory?.CreateLogger<DefaultRedisCacheManager>() ?? NullLogger<DefaultRedisCacheManager>.Instance);
             _connectionLazy = new Lazy<ConnectionMultiplexer>(CreateConnection, true);
         }
 

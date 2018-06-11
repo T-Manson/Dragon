@@ -6,7 +6,6 @@ using Dragon.Framework.ApiCore.Models;
 using Dragon.Framework.Core.Models;
 using Dragon.Framework.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Dragon.Framework.ApiCore.Common
 {

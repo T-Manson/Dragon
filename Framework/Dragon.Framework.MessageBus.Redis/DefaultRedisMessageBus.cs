@@ -54,7 +54,7 @@ namespace Dragon.Framework.MessageBus.Redis
         public DefaultRedisMessageBus(IOptions<RedisMessageBusOptions> options, ILoggerFactory loggerFactory)
         {
             _options = options.Value;
-            _loggerLazy = new Lazy<ILogger>(() => loggerFactory?.CreateLogger<DefaultRedisMessageBus>() ?? (ILogger)NullLogger<DefaultRedisMessageBus>.Instance);
+            _loggerLazy = new Lazy<ILogger>(() => loggerFactory?.CreateLogger<DefaultRedisMessageBus>() ?? NullLogger<DefaultRedisMessageBus>.Instance);
             _connectionLazy = new Lazy<ConnectionMultiplexer>(CreateConnection, true);
         }
 

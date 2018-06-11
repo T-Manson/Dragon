@@ -46,7 +46,7 @@ namespace Dragon.Framework.MessageBus.RabbitMQ
         public DefaultRabbitMqMessageBus(IOptions<RabbitMqMessageBusOptions> options, ILoggerFactory loggerFactory)
         {
             _options = options.Value;
-            _loggerLazy = new Lazy<ILogger>(() => loggerFactory?.CreateLogger<DefaultRabbitMqMessageBus>() ?? (ILogger)NullLogger<DefaultRabbitMqMessageBus>.Instance);
+            _loggerLazy = new Lazy<ILogger>(() => loggerFactory?.CreateLogger<DefaultRabbitMqMessageBus>() ?? NullLogger<DefaultRabbitMqMessageBus>.Instance);
             _connectionLazy = new Lazy<IConnection>(CreateConnection, true);
         }
 

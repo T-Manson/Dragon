@@ -1,9 +1,10 @@
-﻿using System;
-using System.Linq;
-using Dragon.Framework.Core.DependencyInjection;
+﻿using Dragon.Framework.Core.DependencyInjection;
+using Dragon.Framework.Infrastructure;
 using Dragon.Framework.Infrastructure.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Linq;
 
 namespace Dragon.Framework.ApiCore.Extensions
 {
@@ -26,23 +27,53 @@ namespace Dragon.Framework.ApiCore.Extensions
             //From Assembly
             var assemblies = AssemblyHelper.GetAssembliesBySearchPattern(searchPattern);
 
-            var scopedBaseType = typeof(IDependency);
+            var singletonBaseType = typeof(ISingletonDependency);
+            var transientBaseType = typeof(ITransientDependency);
             foreach (var assembly in assemblies)
             {
-                // Scoped
-                var types = assembly.ExportedTypes.Where(type => !type.IsAbstract && scopedBaseType.IsAssignableFrom(type)).ToList();
-                if (types.Any())
+                foreach (var exportedType in assembly.ExportedTypes)
                 {
-                    foreach (var type in types)
+                    if (exportedType.IsAbstract) continue;
+
+                    var dependencyInterfaceTypeList = DependencyInjectionHelper.GetDependencyInterfaceTypeList(exportedType.GetInterfaces())?.ToList();
+                    if (dependencyInterfaceTypeList.IsNullOrEmpty()) continue;
+
+                    foreach (var diInterfaceType in dependencyInterfaceTypeList)
                     {
-                        var diInterfaceType = type.GetInterfaces().FirstOrDefault(interfaceType => scopedBaseType.IsAssignableFrom(interfaceType));
-                        if (diInterfaceType != null) services.AddScoped(diInterfaceType, type);
+                        if (diInterfaceType != null)
+                        {
+                            if (singletonBaseType.IsAssignableFrom(exportedType))
+                            {
+                                services.AddSingleton(diInterfaceType, exportedType);
+                            }
+                            else if (transientBaseType.IsAssignableFrom(exportedType))
+                            {
+                                services.AddTransient(diInterfaceType, exportedType);
+                            }
+                            else
+                            {
+                                services.AddScoped(diInterfaceType, exportedType);
+                            }
+
+                            PrintConsole(diInterfaceType, exportedType);
+                        }
                     }
                 }
             }
+
             Console.WriteLine("DI注入完成。");
 
             return services;
+        }
+
+        /// <summary>
+        /// 打印控制台
+        /// </summary>
+        /// <param name="interfaceType">接口类型</param>
+        /// <param name="implementType">实现的接口类型</param>
+        private static void PrintConsole(Type interfaceType, Type implementType)
+        {
+            Console.WriteLine($"{interfaceType} <- {implementType} OK.");
         }
     }
 }

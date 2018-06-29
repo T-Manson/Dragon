@@ -67,9 +67,6 @@ namespace Dragon.Samples.WepApi
 
             // 注册所有需要注入的服务
             services.RegisterServiceAll(searchPattern);
-
-            // 添加配置注入的支持
-            services.AddOptions();
         }
 
         /// <summary>

@@ -6,11 +6,13 @@
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="1.50.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.2" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="2.0.2" />
     <PackageReference Include="MySql.Data" Version="8.0.11" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Dragon.Framework.Core\Dragon.Framework.Core.csproj" />
     <ProjectReference Include="..\Dragon.Framework.Infrastructure\Dragon.Framework.Infrastructure.csproj" />
   </ItemGroup>
 

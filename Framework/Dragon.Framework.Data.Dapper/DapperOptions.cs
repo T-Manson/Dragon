@@ -8,28 +8,27 @@ namespace Dragon.Framework.Data.Dapper
     /// </summary>
     public class DapperOptions
     {
-        private DbIdentifierMappingStrategy _columnNameMappingStrategy = DbIdentifierMappingStrategy.Underline;
+        /// <summary>
+        /// 大小写规则
+        /// </summary>
+        public CapitalizationRule CapitalizationRule { get; set; } = CapitalizationRule.LowerCase;
+
+        /// <summary>
+        /// DB标识符映射策略
+        /// </summary>
+        private DbIdentifierMappingStrategy _dbIdentifierMappingStrategy = DbIdentifierMappingStrategy.Underline;
 
         /// <summary>
         /// 表名映射策略
         /// </summary>
-        public virtual DbIdentifierMappingStrategy ColumnNameMappingStrategy
+        public virtual DbIdentifierMappingStrategy DbIdentifierMappingStrategy
         {
-            get => _columnNameMappingStrategy;
+            get => _dbIdentifierMappingStrategy;
             set
             {
-                _columnNameMappingStrategy = value;
-                if (_columnNameMappingStrategy == DbIdentifierMappingStrategy.PascalCase)
-                {
-                    DefaultTypeMap.MatchNamesWithUnderscores = false;
-                }
-                else
-                {
-                    DefaultTypeMap.MatchNamesWithUnderscores = true;
-                }
+                _dbIdentifierMappingStrategy = value;
+                DefaultTypeMap.MatchNamesWithUnderscores = _dbIdentifierMappingStrategy != DbIdentifierMappingStrategy.PascalCase;
             }
         }
-
-        public CapitalizationRule CapitalizationRule { get; set; } = CapitalizationRule.LowerCase;
     }
 }

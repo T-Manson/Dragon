@@ -1,13 +1,15 @@
-﻿using System.Text;
-using Dragon.Framework.ApiCore.Extensions;
+﻿using Dragon.Framework.ApiCore.Extensions;
 using Dragon.Framework.ApiCore.Filters;
 using Dragon.Framework.ApiCore.Middlewares;
 using Dragon.Framework.Core.Config;
+using Dragon.Framework.Data.Dapper;
 using Dragon.Framework.Mapping.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System.Text;
 
 namespace Dragon.Samples.WepApi
 {
@@ -60,11 +62,14 @@ namespace Dragon.Samples.WepApi
             // 添加AutoMapper支持
             services.AddAutoMapper(searchPattern);
 
-
-
+            // 添加Dapper支持
+            services.AddDapper(Configuration);
 
             // 注册所有需要注入的服务
             services.RegisterServiceAll(searchPattern);
+
+            // 添加配置注入的支持
+            services.AddOptions();
         }
 
         /// <summary>
@@ -73,8 +78,12 @@ namespace Dragon.Samples.WepApi
         /// <param name="app"></param>
         /// <param name="env"></param>
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            loggerFactory.AddConsole(LogLevel.Information);
+            loggerFactory.AddConsole(LogLevel.Warning);
+            loggerFactory.AddDebug(LogLevel.Error);
+
             // 注入静态请求上下文
             app.UseStaticHttpContext();
 
@@ -87,6 +96,8 @@ namespace Dragon.Samples.WepApi
             // 启用中文编码
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
+            // 跨域规则
+            app.UseCors(b => b.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().AllowCredentials());
             app.UseMvc();
         }
     }

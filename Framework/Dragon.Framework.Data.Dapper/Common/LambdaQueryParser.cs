@@ -1,14 +1,15 @@
-﻿using Dragon.Framework.Data.Dapper.Common.Enums;
-using Dragon.Framework.Infrastructure;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Dragon.Framework.Data.Dapper.Common.Enums;
+using Dragon.Framework.Data.Dapper.Query;
+using Dragon.Framework.Infrastructure;
 
-namespace Dragon.Framework.Data.Dapper.Query
+namespace Dragon.Framework.Data.Dapper.Common
 {
     /// <summary>
     /// Lambda查询转换器
@@ -91,7 +92,7 @@ namespace Dragon.Framework.Data.Dapper.Query
         {
             var expression = node.Body as BinaryExpression;
             if (expression == null) throw new ArgumentException("不是合法的表达式，请确保表达式是一个符合规范的二元表达式。");
-            base.Visit(node.Body);
+            Visit(node.Body);
             return node;
         }
 

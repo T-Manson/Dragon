@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Dragon.Framework.Data.Dapper
+namespace Dragon.Framework.Data.Dapper.Abstractions
 {
     /// <summary>
     /// 仓储接口
@@ -66,7 +66,7 @@ namespace Dragon.Framework.Data.Dapper
         /// <param name="entity">对象</param>
         /// <param name="fieldsToUpdate">需要修改的字段-值</param>
         /// <returns></returns>
-        int Update(T entity, IEnumerable<KeyValuePair<String, Object>> fieldsToUpdate);
+        int Update(T entity, IEnumerable<KeyValuePair<String, object>> fieldsToUpdate);
 
         /// <summary>
         /// 异步根据条件修改
@@ -74,7 +74,7 @@ namespace Dragon.Framework.Data.Dapper
         /// <param name="entity">对象</param>
         /// <param name="fieldsToUpdate">需要修改的字段-值</param>
         /// <returns></returns>
-        Task<int> UpdateAsync(T entity, IEnumerable<KeyValuePair<String, Object>> fieldsToUpdate);
+        Task<int> UpdateAsync(T entity, IEnumerable<KeyValuePair<String, object>> fieldsToUpdate);
 
         /// <summary>
         /// 根据条件修改
@@ -82,7 +82,7 @@ namespace Dragon.Framework.Data.Dapper
         /// <param name="filter">条件</param>
         /// <param name="fieldsToUpdate">需要修改的字段-值</param>
         /// <returns></returns>
-        int Update(QueryFilter filter, IEnumerable<KeyValuePair<String, Object>> fieldsToUpdate);
+        int Update(QueryFilter filter, IEnumerable<KeyValuePair<String, object>> fieldsToUpdate);
 
         /// <summary>
         /// 异步根据条件修改
@@ -90,7 +90,7 @@ namespace Dragon.Framework.Data.Dapper
         /// <param name="filter">条件</param>
         /// <param name="fieldsToUpdate">需要修改的字段-值</param>
         /// <returns></returns>
-        Task<int> UpdateAsync(QueryFilter filter, IEnumerable<KeyValuePair<String, Object>> fieldsToUpdate);
+        Task<int> UpdateAsync(QueryFilter filter, IEnumerable<KeyValuePair<String, object>> fieldsToUpdate);
 
         #endregion
 

@@ -15,7 +15,6 @@ namespace Dragon.Framework.Infrastructure
     /// </summary>
     static partial class ExtensionMethods
     {
-
         #region TableString
 
         /// <summary>
@@ -239,6 +238,13 @@ namespace Dragon.Framework.Infrastructure
             return source.Except(second, new PropertyComparer<TSource>(comparerProperty.GetMemberName()));
         }
 
+        /// <summary>
+        /// 使用分隔符将集合转成字符串
+        /// </summary>
+        /// <typeparam name="T">集合类型</typeparam>
+        /// <param name="array">集合</param>
+        /// <param name="separator">分隔符</param>
+        /// <returns></returns>
         public static string ToArrayString<T>(this IEnumerable<T> array, string separator = ",")
         {
             return string.Join(separator, array.Select(t => t.ToString()));

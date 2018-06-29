@@ -1,6 +1,7 @@
 ﻿using Dragon.Framework.Data.Dapper.Common.Enums;
 using Dragon.Framework.Infrastructure;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace Dragon.Framework.Data.Dapper.Common
@@ -30,7 +31,7 @@ namespace Dragon.Framework.Data.Dapper.Common
             Guard.ArgumentNullOrWhiteSpaceString(fieldName, nameof(fieldName));
 
             _fieldSortDictionary = new ConcurrentDictionary<string, SortOrder>();
-            this._fieldSortDictionary.TryAdd(fieldName, sort);
+            _fieldSortDictionary.TryAdd(fieldName, sort);
         }
 
         /// <summary>
@@ -43,9 +44,18 @@ namespace Dragon.Framework.Data.Dapper.Common
         {
             Guard.ArgumentNullOrWhiteSpaceString(fieldName, nameof(fieldName));
 
-            if (!this._fieldSortDictionary.ContainsKey(fieldName))
-                this._fieldSortDictionary.TryAdd(fieldName, sort);
+            if (!_fieldSortDictionary.ContainsKey(fieldName))
+                _fieldSortDictionary.TryAdd(fieldName, sort);
             return this;
+        }
+
+        /// <summary>
+        /// 获取用于排序的字段。
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<string> GetFields()
+        {
+            return _fieldSortDictionary.Keys;
         }
     }
 }

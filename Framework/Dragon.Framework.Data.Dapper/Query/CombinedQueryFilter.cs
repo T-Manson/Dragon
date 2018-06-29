@@ -34,9 +34,9 @@ namespace Dragon.Framework.Data.Dapper.Query
             Guard.ArgumentNotNull(filter1, nameof(filter1));
             Guard.ArgumentNotNull(filter2, nameof(filter2));
 
-            this.Filter1 = filter1;
-            this.Filter2 = filter2;
-            this.Clause = clause;
+            Filter1 = filter1;
+            Filter2 = filter2;
+            Clause = clause;
         }
     }
 }

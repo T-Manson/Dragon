@@ -1,5 +1,5 @@
-﻿using Dragon.Framework.ApiCore.Common;
-using Dragon.Framework.Core.Config;
+﻿using Dragon.Framework.Core.Config;
+using Dragon.Framework.Core.Environment;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;

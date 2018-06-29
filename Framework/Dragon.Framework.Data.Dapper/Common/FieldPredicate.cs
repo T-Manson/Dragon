@@ -33,9 +33,9 @@ namespace Dragon.Framework.Data.Dapper.Common
         {
             Guard.ArgumentNullOrWhiteSpaceString(fieldName, nameof(fieldName));
 
-            this.FieldName = MappingStrategyParser.Parse(fieldName);
-            this.Operation = binaryOperation;
-            this.OperationValue = value;
+            FieldName = MappingStrategyParser.Parse(fieldName);
+            Operation = binaryOperation;
+            OperationValue = value;
         }
     }
 }

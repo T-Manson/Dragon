@@ -17,7 +17,7 @@ namespace Dragon.Framework.Infrastructure.Helpers
         /// <summary>
         /// 媒体映射关系集合
         /// </summary>
-        private static readonly Lazy<IDictionary<string, string>> Mappings = new Lazy<IDictionary<string, string>>(BuildMappings);
+        private static readonly Lazy<IDictionary<string, string>> MappingsLazy = new Lazy<IDictionary<string, string>>(BuildMappings);
 
         /// <summary>
         /// 根据扩展名获取对应的媒体类型
@@ -32,7 +32,7 @@ namespace Dragon.Framework.Infrastructure.Helpers
                 extension = "." + extension;
             }
 
-            return Mappings.Value.TryGetValue(extension, out var mime) ? mime : DefaultMimeType;
+            return MappingsLazy.Value.TryGetValue(extension, out var mime) ? mime : DefaultMimeType;
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace Dragon.Framework.Infrastructure.Helpers
 
             if (mimeType.StartsWith(".")) throw new ArgumentException("Requested mime type is not valid: " + mimeType);
 
-            if (Mappings.Value.TryGetValue(mimeType, out var extension)) return extension;
+            if (MappingsLazy.Value.TryGetValue(mimeType, out var extension)) return extension;
 
             throw new ArgumentException("Requested mime type is not registered: " + mimeType);
         }

@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.8" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.2" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="4.4.0" />
   </ItemGroup>
 
@@ -18,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Framework\Dragon.Framework.ApiCore\Dragon.Framework.ApiCore.csproj" />
     <ProjectReference Include="..\..\Framework\Dragon.Framework.Core\Dragon.Framework.Core.csproj" />
+    <ProjectReference Include="..\..\Framework\Dragon.Framework.Data.Dapper\Dragon.Framework.Data.Dapper.csproj" />
     <ProjectReference Include="..\..\Framework\Dragon.Framework.Infrastructure\Dragon.Framework.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Framework\Dragon.Framework.Mapping\Dragon.Framework.Mapping.csproj" />
   </ItemGroup>

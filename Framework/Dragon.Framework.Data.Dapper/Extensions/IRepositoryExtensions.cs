@@ -1,12 +1,12 @@
-﻿using Dragon.Framework.Data.Dapper.Common;
-using Dragon.Framework.Data.Dapper.Query;
-using Dragon.Framework.Infrastructure;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Dragon.Framework.Data.Dapper.Abstractions;
+using Dragon.Framework.Data.Dapper.Common;
+using Dragon.Framework.Infrastructure;
 
-namespace Dragon.Framework.Data.Dapper
+namespace Dragon.Framework.Data.Dapper.Extensions
 {
     /// <summary>
     /// 仓储类扩展

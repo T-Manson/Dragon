@@ -1,5 +1,5 @@
-﻿using System;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 
 namespace Dragon.Framework.Core.Config
 {
@@ -15,7 +15,7 @@ namespace Dragon.Framework.Core.Config
         /// <returns></returns>
         public static IConfigurationBuilder AddNormalConfig(this IConfigurationBuilder builder)
         {
-            var environment = Environment.GetEnvironmentVariable("SYSTEM_ENVIRONMENT");
+            var environment = System.Environment.GetEnvironmentVariable("SYSTEM_ENVIRONMENT");
             builder.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                 .AddJsonFile("appsettings.json", true, true)
                 .AddJsonFile($"appsettings.{environment}.json", true, true);

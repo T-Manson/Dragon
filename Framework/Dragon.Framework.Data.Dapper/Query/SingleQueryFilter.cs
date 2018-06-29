@@ -6,6 +6,9 @@ using System.Collections.Generic;
 
 namespace Dragon.Framework.Data.Dapper.Query
 {
+    /// <summary>
+    /// 简单的查询筛选
+    /// </summary>
     public class SingleQueryFilter : QueryFilter, IEnumerable<FieldPredicate>
     {
         /// <summary>
@@ -24,6 +27,11 @@ namespace Dragon.Framework.Data.Dapper.Query
         public BooleanClause Clause { get; set; }
 
         /// <summary>
+        /// 是否为空
+        /// </summary>
+        public bool IsEmpty => _predicateSet.Count == 0;
+
+        /// <summary>
         /// 类型构造
         /// </summary>
         static SingleQueryFilter()
@@ -39,7 +47,7 @@ namespace Dragon.Framework.Data.Dapper.Query
         /// </summary>
         public SingleQueryFilter(BooleanClause clause = BooleanClause.And)
         {
-            this.Clause = clause;
+            Clause = clause;
             _predicateSet = new HashSet<FieldPredicate>(FieldPredicateComparer);
         }
 
@@ -53,7 +61,7 @@ namespace Dragon.Framework.Data.Dapper.Query
         /// <returns></returns>
         public SingleQueryFilter AddEqual(string fieldName, object value)
         {
-            this._predicateSet.Add(new FieldPredicate(fieldName, BinaryOperation.Equal, value));
+            _predicateSet.Add(new FieldPredicate(fieldName, BinaryOperation.Equal, value));
             return this;
         }
 
@@ -65,7 +73,7 @@ namespace Dragon.Framework.Data.Dapper.Query
         /// <returns></returns>
         public SingleQueryFilter AddNotEqual(string fieldName, object value)
         {
-            this._predicateSet.Add(new FieldPredicate(fieldName, BinaryOperation.NotEqual, value));
+            _predicateSet.Add(new FieldPredicate(fieldName, BinaryOperation.NotEqual, value));
             return this;
         }
 
@@ -77,7 +85,7 @@ namespace Dragon.Framework.Data.Dapper.Query
         /// <returns></returns>
         public SingleQueryFilter AddGreater(string fieldName, object value)
         {
-            this._predicateSet.Add(new FieldPredicate(fieldName, BinaryOperation.Greater, value));
+            _predicateSet.Add(new FieldPredicate(fieldName, BinaryOperation.Greater, value));
             return this;
         }
 
@@ -89,7 +97,7 @@ namespace Dragon.Framework.Data.Dapper.Query
         /// <returns></returns>
         public SingleQueryFilter AddGreaterOrEqual(string fieldName, object value)
         {
-            this._predicateSet.Add(new FieldPredicate(fieldName, BinaryOperation.GreaterOrEqual, value));
+            _predicateSet.Add(new FieldPredicate(fieldName, BinaryOperation.GreaterOrEqual, value));
             return this;
         }
 
@@ -101,7 +109,7 @@ namespace Dragon.Framework.Data.Dapper.Query
         /// <returns></returns>
         public SingleQueryFilter AddLess(string fieldName, object value)
         {
-            this._predicateSet.Add(new FieldPredicate(fieldName, BinaryOperation.Less, value));
+            _predicateSet.Add(new FieldPredicate(fieldName, BinaryOperation.Less, value));
             return this;
         }
 
@@ -113,7 +121,7 @@ namespace Dragon.Framework.Data.Dapper.Query
         /// <returns></returns>
         public SingleQueryFilter AddLessOrEqual(string fieldName, object value)
         {
-            this._predicateSet.Add(new FieldPredicate(fieldName, BinaryOperation.LessOrEqual, value));
+            _predicateSet.Add(new FieldPredicate(fieldName, BinaryOperation.LessOrEqual, value));
             return this;
         }
 
@@ -127,7 +135,7 @@ namespace Dragon.Framework.Data.Dapper.Query
         /// <param name="value">用于筛选的值。</param>
         public void AddPredicate(string fieldName, BinaryOperation operation, object value)
         {
-            this._predicateSet.Add(new FieldPredicate(fieldName, operation, value));
+            _predicateSet.Add(new FieldPredicate(fieldName, operation, value));
         }
 
         /// <summary>
@@ -136,7 +144,7 @@ namespace Dragon.Framework.Data.Dapper.Query
         /// <returns></returns>
         IEnumerator<FieldPredicate> IEnumerable<FieldPredicate>.GetEnumerator()
         {
-            return this._predicateSet.GetEnumerator();
+            return _predicateSet.GetEnumerator();
         }
 
         /// <summary>
@@ -145,7 +153,7 @@ namespace Dragon.Framework.Data.Dapper.Query
         /// <returns></returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this._predicateSet.GetEnumerator();
+            return _predicateSet.GetEnumerator();
         }
     }
 }

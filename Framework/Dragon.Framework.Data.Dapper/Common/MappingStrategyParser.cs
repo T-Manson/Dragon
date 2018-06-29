@@ -1,8 +1,8 @@
-﻿using Dragon.Framework.Data.Dapper.Common.Enums;
+﻿using System.Text;
+using Dragon.Framework.Data.Dapper.Common.Enums;
 using Microsoft.Extensions.Options;
-using System.Text;
 
-namespace Dragon.Framework.Data.Dapper
+namespace Dragon.Framework.Data.Dapper.Common
 {
     /// <summary>
     /// 将名称根据db映射策略转换为符合db规则的名称
@@ -28,9 +28,10 @@ namespace Dragon.Framework.Data.Dapper
         /// </summary>
         /// <param name="name">类型名或者属性名</param> 
         /// <returns></returns>
+        /// <returns></returns>
         public static string Parse(string name)
         {
-            var strategy = _dapperOptions?.ColumnNameMappingStrategy ?? DbIdentifierMappingStrategy.Underline;
+            var strategy = _dapperOptions?.DbIdentifierMappingStrategy ?? DbIdentifierMappingStrategy.Underline;
             var rule = _dapperOptions?.CapitalizationRule ?? CapitalizationRule.LowerCase;
             return Parse(name, strategy, rule);
         }

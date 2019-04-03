@@ -1,7 +1,7 @@
-﻿using Dragon.Framework.Core.MessageBus;
+﻿using System;
+using Dragon.Framework.Core.MessageBus;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace Dragon.Framework.MessageBus.Redis
 {
@@ -18,13 +18,7 @@ namespace Dragon.Framework.MessageBus.Redis
         /// <returns></returns>
         public static void AddRedisBus(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<RedisMessageBusOptions>(options =>
-            {
-                RedisMessageBusBootstrap.SetRedisMessageBusOptions(configuration, options);
-            });
-
-            services.AddSingleton<IMessageBus, DefaultRedisMessageBus>();
-            Console.WriteLine("Redis Bus注入完成。");
+            RedisMessageBusBootstrap.UseRedisBus(services, configuration);
         }
     }
 }

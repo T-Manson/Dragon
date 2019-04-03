@@ -1,7 +1,7 @@
-﻿using Dragon.Framework.Core.Caching;
+﻿using System;
+using Dragon.Framework.Core.Caching;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace Dragon.Framework.Caching.Redis
 {
@@ -20,17 +20,7 @@ namespace Dragon.Framework.Caching.Redis
         public static void AddRedis(this IServiceCollection services,
             IConfiguration configuration, bool useHybridMode = false)
         {
-            services.Configure<RedisCacheOptions>(options =>
-            {
-                RedisBootstrap.SetRedisCacheOptions(configuration, options);
-            });
-
-            if (useHybridMode)
-                services.AddSingleton<IRedisCacheManager, DefaultRedisCacheManager>();
-            else
-                services.AddSingleton<ICacheManager, DefaultRedisCacheManager>();
-
-            Console.WriteLine("Redis注入完成。");
+            RedisBootstrap.UseRedis(services, configuration, useHybridMode);
         }
     }
 }

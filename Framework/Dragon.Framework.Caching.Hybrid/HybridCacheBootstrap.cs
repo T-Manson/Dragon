@@ -1,20 +1,27 @@
-﻿namespace Dragon.Framework.Caching.Hybrid
+﻿using Dragon.Framework.Core.Caching;
+using Dragon.Framework.Caching.Redis;
+using Dragon.Framework.Caching.Memory;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+
+namespace Dragon.Framework.Caching.Hybrid
 {
     /// <summary>
     /// 混合缓存帮助类
     /// </summary>
     public static class HybridCacheBootstrap
     {
-        ///// <summary>
-        ///// 启用混合缓存 TODO
-        ///// </summary>
-        ///// <param name="configuration">配置</param>
-        //public static void UseHybridCache(IConfiguration configuration)
-        //{
-        //    MemoryCacheBootstrap.UseMemoryCache(configuration, true);
-        //    RedisBootstrap.UseRedis(configuration, true);
-        //    DependencyConfigurator.RegisterType<ICacheManager, DefaultHybridCacheManager>();
-        //    Console.WriteLine("HybridCache注入完成。");
-        //}
+        /// <summary>
+        /// 启用混合缓存
+        /// </summary>
+        /// <param name="configuration">配置</param>
+        public static void UseHybridCache(IServiceCollection services, IConfiguration configuration)
+        {
+            MemoryCacheBootstrap.UseMemoryCache(services, configuration, true);
+            RedisBootstrap.UseRedis(services, configuration, true);
+            services.AddSingleton<ICacheManager, DefaultHybridCacheManager>();
+            Console.WriteLine("HybridCache 注入完成。");
+        }
     }
 }

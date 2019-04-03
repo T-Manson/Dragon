@@ -1,5 +1,9 @@
-﻿using Dragon.Framework.Core.Exceptions;
+﻿using System;
+using Dragon.Framework.Core.Exceptions;
+using Dragon.Framework.Core.MessageBus;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Dragon.Framework.MessageBus.Redis
 {
@@ -8,21 +12,20 @@ namespace Dragon.Framework.MessageBus.Redis
     /// </summary>
     public static class RedisMessageBusBootstrap
     {
-        ///// <summary>
-        ///// 启用Redis Bus TODO
-        ///// </summary>
-        ///// <param name="configuration">配置</param>
-        //public static void UseRedisBus(IConfiguration configuration)
-        //{
-        //    RedisMessageBusOptions options = new RedisMessageBusOptions();
-        //    SetRedisMessageBusOptions(configuration, options);
+        /// <summary>
+        /// 启用Redis Bus
+        /// </summary>
+        /// <param name="configuration">配置</param>
+        public static void UseRedisBus(IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<RedisMessageBusOptions>(options =>
+            {
+                RedisMessageBusBootstrap.SetRedisMessageBusOptions(configuration, options);
+            });
 
-        //    // 设置配置
-        //    DependencyConfigurator.RegisterInstance<IOptions<RedisMessageBusOptions>, RedisMessageBusOptions>(options);
-
-        //    DependencyConfigurator.RegisterType<IMessageBus, DefaultRedisMessageBus>();
-        //    Console.WriteLine("Redis Bus注入完成。");
-        //}
+            services.AddSingleton<IMessageBus, DefaultRedisMessageBus>();
+            Console.WriteLine("Redis Bus 注入完成。");
+        }
 
         /// <summary>
         /// 设置

@@ -1,10 +1,13 @@
 # Dragon
+
 基于 .Net Core 的后端基础框架
 
 # 项目介绍
+
 基于 .Net Core 的一套后端通用基础框架，用于快速搭建WebApi项目。集成Redis、Dapper、RabbitMQ、AutoMapper、Newtonsoft.Json。加入了常用工具类避免造轮子的工作。
 
 # 技术选型
+
 |技术|简介|官网|
 |-----|-----|-----|
 |.Net Core|开源跨平台的技术框架|https://dotnet.github.io/|
@@ -15,9 +18,113 @@
 |Newtonsoft.Json|Json中间件|https://github.com/JamesNK/Newtonsoft.Json|
 
 # 功能说明
+
 ## 中文转拼音功能
 Inspired by PinYinConverter.<br />
 Microsoft.International.Converters.PinYinConverter in Microsoft Visual Studio International Pack 1.0 SR1.
 
-# 配置相关
-[Dragon.Samples.WepApi示例配置](https://github.com/T-Manson/Dragon/blob/master/Samples/Dragon.Samples.WepApi/appsettings.json)
+## MemoryCache
+
+默认实现消息通知起到local缓存更新后分布式应用间的数据同步功能。未启用MessageBus功能时，该功能不会启用。
+
+**当MessageBus使用RabbitMQ时，需要配置一个名为cache.sync的channel**
+
+# 配置
+
+[完整示例](Samples/Dragon.Samples.WepApi/appsettings.json)
+
+## 应用名称
+
+``` text
+"AppName": ""
+```
+
+## 配置中心地址 TODO
+
+默认zookeeper
+
+``` text
+"ConfigCenterAddress": "zookeeper或其他配置组件的地址配置（需要自己实现配置注入）"
+```
+
+## 数据库
+
+``` json
+"Data": {
+    // 默认使用的连接配置键名
+    "DefaultConnectionName": "default",
+    // 连接串集合
+	"ConnectionStrings": {
+        // 默认（读串）
+		"default": {
+            // 连接串
+			"ConnectionString": "server=127.0.0.1;Database=mytest;UID=root;PWD=root;SslMode=None;",
+            // 数据库类型（默认MySql）
+			"DatabaseProviderType": "MySql|SqlServer"
+		}
+        //,
+        // 写串
+        //"write": {
+        //    "ConnectionString": "server=;Database=;UID=;PWD=;Charset=utf8;SslMode=None;",
+        //    "DatabaseProviderType": "SqlServer"
+        //}
+	},
+    // Dapper 配置
+	"Dapper": {
+        // 数据库映射策略（默认Underline）
+		"DbIdentifierMappingStrategy": "Underline|PascalCase",
+        // 大小写规则（默认LowerCase）
+		"CapitalizationRule": "LowerCase|UpperCase|Original"
+	}
+}
+```
+
+## 缓存
+
+``` json
+"Cache": {
+    // Redis配置
+	"Redis": {
+        // IP，必须
+        "Host": "127.0.0.1",
+        // 端口，必须
+        "Port": 6379,
+        // 密码，必须
+        "Password": "123456",
+        // Key的区域区分系统，必须
+        "Region": "应用名或其他能够隔离缓存的值",
+        // DB下标，不配置则默认0
+		"Db": 0
+	}
+}
+```
+
+## 消息
+
+### RedisBus
+
+与Cache节点下Redis共用配置。[缓存配置](#缓存)
+
+### RabbitMQ
+
+``` json
+"RabbitMQ": {
+    // RabbitMQ默认配置
+	"Default": {
+        // Uri，必须
+        "Uri": "127.0.0.1",
+        // 用户名，必须
+        "Username": "username",
+        // 密码，必须
+        "Password": "123456",
+        // Exchange，必须
+        "Exchange": "test"
+	}
+}
+```
+
+
+
+
+
+

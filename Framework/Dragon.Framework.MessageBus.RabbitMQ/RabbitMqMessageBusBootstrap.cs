@@ -1,35 +1,37 @@
-﻿using Dragon.Framework.Core.Exceptions;
+﻿using System;
+using Dragon.Framework.Core.Exceptions;
+using Dragon.Framework.Core.MessageBus;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Dragon.Framework.MessageBus.RabbitMQ
 {
     /// <summary>
-    /// Redis消息帮助类
+    /// RabbitMq消息帮助类
     /// </summary>
     public static class RabbitMqMessageBusBootstrap
     {
-        ///// <summary>
-        ///// 启用Redis Bus TODO
-        ///// </summary>
-        ///// <param name="configuration">配置</param>
-        //public static void UseRedisBus(IConfiguration configuration)
-        //{
-        //    RedisMessageBusOptions options = new RedisMessageBusOptions();
-        //    SetRedisMessageBusOptions(configuration, options);
+        /// <summary>
+        /// 启用RabbitMq
+        /// </summary>
+        /// <param name="configuration">配置</param>
+        public static void UseRabbitMq(IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<RabbitMqMessageBusOptions>(options =>
+            {                
+                RabbitMqMessageBusBootstrap.SetRabbitMqOptions(configuration, options);
+            });
 
-        //    // 设置配置
-        //    DependencyConfigurator.RegisterInstance<IOptions<RedisMessageBusOptions>, RedisMessageBusOptions>(options);
-
-        //    DependencyConfigurator.RegisterType<IMessageBus, DefaultRedisMessageBus>();
-        //    Console.WriteLine("Redis Bus注入完成。");
-        //}
+            services.AddSingleton<IMessageBus, DefaultRabbitMqMessageBus>();
+            Console.WriteLine("RabbitMq 注入完成。");
+        }
 
         /// <summary>
         /// 设置
         /// </summary>
         /// <param name="configuration">配置</param>
         /// <param name="options">配置对象</param>
-        internal static void SetRedisMessageBusOptions(IConfiguration configuration, RabbitMqMessageBusOptions options)
+        internal static void SetRabbitMqOptions(IConfiguration configuration, RabbitMqMessageBusOptions options)
         {
             string uri = configuration.GetValue<string>("RabbitMQ.Default.Uri");
             if (string.IsNullOrWhiteSpace(uri))

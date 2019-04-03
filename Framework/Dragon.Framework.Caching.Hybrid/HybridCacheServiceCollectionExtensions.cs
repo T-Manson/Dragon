@@ -20,10 +20,7 @@ namespace Dragon.Framework.Caching.Hybrid
         /// <returns></returns>
         public static void AddHybridCache(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddLocalMemoryCache(configuration, true);
-            services.AddRedis(configuration, true);
-            services.AddSingleton<ICacheManager, DefaultHybridCacheManager>();
-            Console.WriteLine("HybridCache注入完成。");
+            HybridCacheBootstrap.UseHybridCache(services, configuration);
         }
     }
 }

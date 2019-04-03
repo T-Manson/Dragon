@@ -1,6 +1,9 @@
-﻿using Dragon.Framework.Core.Caching;
+﻿using System;
+using Dragon.Framework.Core.Caching;
 using Dragon.Framework.Core.Exceptions;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Dragon.Framework.Caching.Redis
 {
@@ -9,27 +12,28 @@ namespace Dragon.Framework.Caching.Redis
     /// </summary>
     public static class RedisBootstrap
     {
-        ///// <summary>
-        ///// 启用Redis TODO
-        ///// 启用Redis TODO
-        ///// </summary>
-        ///// <param name="configuration">配置</param>
-        ///// <param name="useHybridMode">是否启用混合模式</param>
-        //public static void UseRedis(IConfiguration configuration, bool useHybridMode = false)
-        //{
-        //    RedisCacheOptions options = new RedisCacheOptions();
-        //    SetRedisCacheOptions(configuration, options);
+        /// <summary>
+        /// 启用Redis
+        /// </summary>
+        /// <param name="configuration">配置</param>
+        /// <param name="useHybridMode">是否启用混合模式</param>
+        public static void UseRedis(IServiceCollection services,
+            IConfiguration configuration, bool useHybridMode = false)
+        {
+            services.Configure<RedisCacheOptions>(options =>
+            {
+                RedisBootstrap.SetRedisCacheOptions(configuration, options);
+            });
 
-        //    // 设置配置
-        //    DependencyConfigurator.RegisterInstance<IOptions<RedisCacheOptions>, RedisCacheOptions>(options);
+            // Hack StackExchange.Redis 1.2.6下使用单例模式会有连接线程池上限的BUG导致请求timeout
+            // TODO 暂时使用Transient模式解决以上问题
+            if (useHybridMode)
+                services.AddTransient<IRedisCacheManager, DefaultRedisCacheManager>();
+            else
+                services.AddTransient<ICacheManager, DefaultRedisCacheManager>();
 
-        //    if (useHybridMode)
-        //        DependencyConfigurator.RegisterType<IRedisCacheManager, DefaultRedisCacheManager>();
-        //    else
-        //        DependencyConfigurator.RegisterType<ICacheManager, DefaultRedisCacheManager>();
-
-        //    Console.WriteLine("Redis注入完成。");
-        //}
+            Console.WriteLine("Redis 注入完成。");
+        }
 
         /// <summary>
         /// 设置

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace Dragon.Framework.MessageBus.RabbitMQ
 {
     /// <summary>
-    /// Redis消息管理类
+    /// RabbitMq消息管理类
     /// </summary>
     public class DefaultRabbitMqMessageBus : IMessageBus, IDisposable
     {

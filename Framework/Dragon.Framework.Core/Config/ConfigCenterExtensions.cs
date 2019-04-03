@@ -18,8 +18,8 @@ namespace Dragon.Framework.Core.Config
             var environment = System.Environment.GetEnvironmentVariable("SYSTEM_ENVIRONMENT");
             builder.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                 .AddJsonFile("appsettings.json", true, true)
-                .AddJsonFile($"appsettings.{environment}.json", true, true);
-            //.AddConfigCenter();
+                .AddJsonFile($"appsettings.{environment}.json", true, true)
+                .AddConfigCenter();
 
             return builder;
         }
@@ -31,23 +31,24 @@ namespace Dragon.Framework.Core.Config
         /// <param name="basePath">根目录</param>
         /// <param name="environment">环境值</param>
         /// <returns></returns>
-        public static IConfigurationBuilder AddNormalConfig(this IConfigurationBuilder builder, string basePath, string environment)
+        public static IConfigurationBuilder AddNormalConfig(this IConfigurationBuilder builder, 
+            string basePath, string environment)
         {
             builder.SetBasePath(basePath)
                 .AddJsonFile("appsettings.json", true, true)
-                .AddJsonFile($"appsettings.{environment}.json", true, true);
-            //.AddConfigCenter();
+                .AddJsonFile($"appsettings.{environment}.json", true, true)
+                .AddConfigCenter();
 
             return builder;
         }
 
-        ///// <summary>
-        ///// 添加配置中心 TODO
-        ///// </summary>
-        ///// <param name="builder"></param>
-        ///// <returns></returns>
-        //public static IConfigurationBuilder AddConfigCenter(this IConfigurationBuilder builder)
-        //{
+        /// <summary>
+        /// 添加配置中心 TODO
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static IConfigurationBuilder AddConfigCenter(this IConfigurationBuilder builder)
+        {
         //    var configuration = builder.Build() ?? new ConfigurationBuilder().Build();
 
         //    ConfigClient.Run(c =>
@@ -56,6 +57,7 @@ namespace Dragon.Framework.Core.Config
         //        c.SetConfigCenterAddress(configuration["Bcs:ConfigCenterAddress"]);
         //    });
         //    return builder.Add(new ConfigCenterConfigurationSource());
-        //}
+            return builder;
+        }
     }
 }

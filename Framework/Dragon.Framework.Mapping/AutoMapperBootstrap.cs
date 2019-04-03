@@ -10,15 +10,6 @@ namespace Dragon.Framework.Mapping
     /// </summary>
     public static class AutoMapperBootstrap
     {
-        ///// <summary>
-        ///// 注入AutoMapper对象 TODO
-        ///// </summary>
-        //public static void RegisterMapperService(ContainerBuilder containerBuilder)
-        //{
-        //    containerBuilder.Register(c => Mapper.Instance);
-        //    Console.WriteLine("注入AutoMapper对象完成。");
-        //}
-
         /// <summary>
         /// 初始化实体映射配置
         /// </summary>

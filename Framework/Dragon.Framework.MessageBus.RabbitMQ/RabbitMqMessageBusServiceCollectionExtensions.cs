@@ -18,13 +18,7 @@ namespace Dragon.Framework.MessageBus.RabbitMQ
         /// <returns></returns>
         public static void AddRabbitMq(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<RabbitMqMessageBusOptions>(options =>
-            {
-                RabbitMqMessageBusBootstrap.SetRedisMessageBusOptions(configuration, options);
-            });
-
-            services.AddSingleton<IMessageBus, DefaultRabbitMqMessageBus>();
-            Console.WriteLine("RabbitMq Bus注入完成。");
+            RabbitMqMessageBusBootstrap.UseRabbitMq(services, configuration);
         }
     }
 }

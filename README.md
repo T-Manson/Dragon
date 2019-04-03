@@ -10,7 +10,7 @@
 
 |技术|简介|官网|
 |-----|-----|-----|
-|.Net Core|开源跨平台的技术框架|https://dotnet.github.io/|
+|.Net Core|开源跨平台的技术框架|https://dotnet.microsoft.com|
 |StackExchange.Redis|Redis中间件|https://github.com/StackExchange/StackExchange.Redis|
 |Dapper|ORM框架|https://github.com/StackExchange/Dapper|
 |RabbitMQ.Client|RabbitMQ中间件|https://github.com/rabbitmq/rabbitmq-dotnet-client|

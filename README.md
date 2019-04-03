@@ -18,3 +18,6 @@
 ## 中文转拼音功能
 Inspired by PinYinConverter.<br />
 Microsoft.International.Converters.PinYinConverter in Microsoft Visual Studio International Pack 1.0 SR1.
+
+# 配置相关
+[Dragon.Samples.WepApi示例配置](https://github.com/T-Manson/Dragon/blob/master/Samples/Dragon.Samples.WepApi/appsettings.json)

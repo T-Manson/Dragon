@@ -20,6 +20,11 @@
     <ProjectReference Include="..\..\Framework\Dragon.Framework.Data.Dapper\Dragon.Framework.Data.Dapper.csproj" />
     <ProjectReference Include="..\..\Framework\Dragon.Framework.Infrastructure\Dragon.Framework.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Framework\Dragon.Framework.Mapping\Dragon.Framework.Mapping.csproj" />
+    <ProjectReference Include="..\..\Framework\Dragon.Framework.Caching.Memory\Dragon.Framework.Caching.Memory.csproj" />
+    <ProjectReference Include="..\..\Framework\Dragon.Framework.Caching.Redis\Dragon.Framework.Caching.Redis.csproj" />
+    <ProjectReference Include="..\..\Framework\Dragon.Framework.Caching.Hybrid\Dragon.Framework.Caching.Hybrid.csproj" />
+    <ProjectReference Include="..\..\Framework\Dragon.Framework.MessageBus.RabbitMQ\Dragon.Framework.MessageBus.RabbitMQ.csproj" />
+    <ProjectReference Include="..\..\Framework\Dragon.Framework.MessageBus.Redis\Dragon.Framework.MessageBus.Redis.csproj" />
   </ItemGroup>
 
   <ItemGroup>

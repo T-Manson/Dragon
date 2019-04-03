@@ -1,6 +1,7 @@
 ﻿using Dragon.Framework.Core.DependencyInjection;
 using Dragon.Framework.Data.Dapper.Abstractions;
 using Dragon.Samples.WepApi.DBModels;
+using Dragon.Samples.WepApi.DomainModels;
 using System.Threading.Tasks;
 
 namespace Dragon.Samples.WepApi.Repositories
@@ -15,6 +16,6 @@ namespace Dragon.Samples.WepApi.Repositories
         /// </summary>
         /// <param name="name">名称</param>
         /// <returns></returns>
-        Task<MyTest> GetByName(string name);
+        Task<MyTestResponse> GetByName(string name);
     }
 }

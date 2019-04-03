@@ -4,7 +4,7 @@ namespace Dragon.Framework.Core.Config
 {
     /// <inheritdoc />
     /// <summary>
-    /// 配置中心配置提供器 TODO
+    /// 配置中心配置提供器 TODO ZooKeeper
     /// </summary>
     public class ConfigCenterConfigurationProvider : ConfigurationProvider
     {

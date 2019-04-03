@@ -43,21 +43,13 @@ namespace Dragon.Framework.Core.Config
         }
 
         /// <summary>
-        /// 添加配置中心 TODO
+        /// 添加配置中心
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>
         public static IConfigurationBuilder AddConfigCenter(this IConfigurationBuilder builder)
         {
-        //    var configuration = builder.Build() ?? new ConfigurationBuilder().Build();
-
-        //    ConfigClient.Run(c =>
-        //    {
-        //        c.SetAppName(configuration["AppName"]);
-        //        c.SetConfigCenterAddress(configuration["Bcs:ConfigCenterAddress"]);
-        //    });
-        //    return builder.Add(new ConfigCenterConfigurationSource());
-            return builder;
+           return builder.Add(new ConfigCenterConfigurationSource());
         }
     }
 }

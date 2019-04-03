@@ -4,6 +4,11 @@ using Dragon.Framework.ApiCore.Middlewares;
 using Dragon.Framework.Core.Config;
 using Dragon.Framework.Data.Dapper;
 using Dragon.Framework.Mapping.Extensions;
+using Dragon.Framework.Caching.Memory;
+using Dragon.Framework.Caching.Redis;
+using Dragon.Framework.Caching.Hybrid;
+using Dragon.Framework.MessageBus.RabbitMQ;
+using Dragon.Framework.MessageBus.Redis;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -14,12 +19,12 @@ using System.Text;
 namespace Dragon.Samples.WepApi
 {
     /// <summary>
-    /// 
+    /// 启动类
     /// </summary>
     public class Startup
     {
         /// <summary>
-        /// 
+        /// 配置
         /// </summary>
         private IConfiguration Configuration { get; }
 
@@ -64,6 +69,21 @@ namespace Dragon.Samples.WepApi
 
             // 添加Dapper支持
             services.AddDapper(Configuration);
+
+            // 添加MemoryCache支持
+            services.AddMemoryCache(Configuration);
+
+            // 添加Redis支持
+            services.AddRedis(Configuration);
+
+            // 添加HybridCache支持
+            services.AddHybridCache(Configuration);
+
+            // 添加RabbitMQ支持
+            services.AddRabbitMq(Configuration);
+
+            // 添加RedisBus支持
+            services.AddRedisBus(Configuration);
 
             // 注册所有需要注入的服务
             services.RegisterServiceAll(searchPattern);

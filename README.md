@@ -25,9 +25,43 @@ Microsoft.International.Converters.PinYinConverter in Microsoft Visual Studio In
 
 ## MemoryCache
 
+注入接口类型：
+
+ICacheManager
+
+**特别说明**
+
 默认实现消息通知起到local缓存更新后分布式应用间的数据同步功能。未启用MessageBus功能时，该功能不会启用。
 
-**当MessageBus使用RabbitMQ时，需要配置一个名为cache.sync的channel**
+当MessageBus使用RabbitMQ时，需要配置一个名为**cache.sync**的channel
+
+## Redis
+
+注入接口类型：
+
+ICacheManager
+
+## HybridCache
+
+注入接口类型：
+
+ICacheManager
+
+IMemoryCacheManager
+
+IRedisCacheManager
+
+## RabbitMQ
+
+注入接口类型：
+
+IMessageBus
+
+## RedisBus
+
+注入接口类型：
+
+IMessageBus
 
 # 配置
 
@@ -39,7 +73,7 @@ Microsoft.International.Converters.PinYinConverter in Microsoft Visual Studio In
 "AppName": ""
 ```
 
-## 配置中心地址 TODO
+## 配置中心地址
 
 默认zookeeper
 

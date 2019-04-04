@@ -13,7 +13,7 @@ namespace Dragon.Samples.WepApi.MappingConfigs
         public ResponseMapping()
         {
             // 字段映射配置
-            CreateMap<MyTest, MyTestResponse>().ForMember(target => target.NameTest, opt => opt.MapFrom(source=>source.Name));
+            CreateMap<MyTest, MyTestResponse>().ForMember(target => target.NameTest, opt => opt.MapFrom(source => source.Name));
         }
     }
 }

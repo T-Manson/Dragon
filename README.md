@@ -73,14 +73,6 @@ IMessageBus
 "AppName": ""
 ```
 
-## 配置中心地址
-
-默认zookeeper
-
-``` text
-"ConfigCenterAddress": "zookeeper或其他配置组件的地址配置（需要自己实现配置注入）"
-```
-
 ## 数据库
 
 ``` json

@@ -79,7 +79,7 @@ IMessageBus
 "Data": {
     // 默认使用的连接配置键名
     "DefaultConnectionName": "default",
-    // 连接串集合
+    	// 连接串集合
 	"ConnectionStrings": {
         // 默认（读串）
 		"default": {
@@ -109,7 +109,7 @@ IMessageBus
 
 ``` json
 "Cache": {
-    // Redis配置
+    	// Redis配置
 	"Redis": {
         // IP，必须
         "Host": "127.0.0.1",
@@ -135,7 +135,7 @@ IMessageBus
 
 ``` json
 "RabbitMQ": {
-    // RabbitMQ默认配置
+    	// RabbitMQ默认配置
 	"Default": {
         // Uri，必须
         "Uri": "127.0.0.1",

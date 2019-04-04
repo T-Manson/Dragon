@@ -96,12 +96,12 @@ IMessageBus
         //}
 	},
     // Dapper 配置
-	"Dapper": {
+    "Dapper": {
         // 数据库映射策略（默认Underline）
-		"DbIdentifierMappingStrategy": "Underline|PascalCase",
+	"DbIdentifierMappingStrategy": "Underline|PascalCase",
         // 大小写规则（默认LowerCase）
-		"CapitalizationRule": "LowerCase|UpperCase|Original"
-	}
+	"CapitalizationRule": "LowerCase|UpperCase|Original"
+    }
 }
 ```
 

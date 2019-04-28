@@ -82,12 +82,12 @@ IMessageBus
     	// 连接串集合
 	"ConnectionStrings": {
         // 默认（读串）
-		"default": {
-            // 连接串
-			"ConnectionString": "server=127.0.0.1;Database=mytest;UID=root;PWD=root;SslMode=None;",
-            // 数据库类型（默认MySql）
-			"DatabaseProviderType": "MySql|SqlServer"
-		}
+	"default": {
+        	// 连接串
+		"ConnectionString": "server=127.0.0.1;Database=mytest;UID=root;PWD=root;SslMode=None;",
+            	// 数据库类型（默认MySql）
+		"DatabaseProviderType": "MySql|SqlServer"
+	}
         //,
         // 写串
         //"write": {
@@ -120,7 +120,7 @@ IMessageBus
         // Key的区域区分系统，必须
         "Region": "应用名或其他能够隔离缓存的值",
         // DB下标，不配置则默认0
-		"Db": 0
+	"Db": 0
 	}
 }
 ```
